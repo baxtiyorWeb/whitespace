@@ -5,14 +5,14 @@ interface UsePaginateQueryProps {
 	key?: string;
 	url?: string;
 	page?: number;
-	params?: Record<string, null>;
+	params?: Record<string, unknown>;
 	showSuccessMsg?: boolean;
 	showErrorMsg?: boolean;
 	enabled?: boolean;
 }
 
 interface ApiResponse {
-	data: null;
+	data: unknown;
 }
 
 const usePaginateQuery = ({
