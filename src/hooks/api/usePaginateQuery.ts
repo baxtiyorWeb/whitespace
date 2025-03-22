@@ -11,10 +11,6 @@ interface UsePaginateQueryProps {
 	enabled?: boolean;
 }
 
-interface ApiResponse {
-	data: unknown;
-}
-
 const usePaginateQuery = ({
 	key = 'get-all',
 	url = '/',
@@ -22,19 +18,17 @@ const usePaginateQuery = ({
 	params = {},
 	enabled = true,
 }: UsePaginateQueryProps) => {
-	const { isLoading, isError, data, error, isFetching, refetch } = useQuery<
-		ApiResponse,
-		Error
-	>({
-		queryKey: [key, page, params],
-		queryFn: async () => {
-			const response = await api.get<ApiResponse>(`${url}?page=${page}`, {
-				params,
-			});
-			return response.data;
-		},
-		enabled,
-	});
+	const { isLoading, isError, data, error, isFetching, refetch } =
+		useQuery<Error>({
+			queryKey: [key, page, params],
+			queryFn: async () => {
+				const response = await api.get(`${url}?page=${page}`, {
+					params,
+				});
+				return response.data;
+			},
+			enabled,
+		});
 
 	return {
 		isLoading,
