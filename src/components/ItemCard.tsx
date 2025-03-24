@@ -72,16 +72,16 @@ const ItemCard = ({
   };
 
   return (
-    <div style={containerStyles} className="p-4 border rounded-lg bg-gray-100">
+    <div style={containerStyles} >
       {slider ? (
         <Slider {...mergedSliderConfig}>
           {items.map((item, index) => (
             <div
               key={index}
               style={cardStyles}
-              className={`${className || "bg-blue-500"} p-4 shadow-md rounded-md`}
+              className={`${className}   `}
             >
-              {item}
+              {children ?? item}
             </div>
           ))}
         </Slider>
@@ -90,9 +90,9 @@ const ItemCard = ({
           <div
             key={index}
             style={cardStyles}
-            className={`${className || "bg-blue-500"} p-4 shadow-md rounded-md`}
+            className={`${className}   `}
           >
-            {children ? children : item}
+            {children ?? item}
           </div>
         ))
       )}

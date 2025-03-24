@@ -1,4 +1,3 @@
-import { tw } from '@/common/common'
 import React from 'react'
 
 type ChildrenProp = {
@@ -9,7 +8,7 @@ type ChildrenProp = {
 
 const Container = ({ children }: ChildrenProp) => {
   return (
-    <div className={`container ${tw.colors.darkBlue.bg} px-[67px] mx-auto border`}>
+    <div className={`container  mx-auto border`}>
       {children}
     </div>
   )
