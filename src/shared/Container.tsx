@@ -8,7 +8,7 @@ type ChildrenProp = {
 
 const Container = ({ children }: ChildrenProp) => {
   return (
-    <div className={`container  mx-auto border`}>
+    <div className={`container  mx-auto `}>
       {children}
     </div>
   )
