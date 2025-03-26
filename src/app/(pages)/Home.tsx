@@ -1,288 +1,25 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { tw } from "@/common/common"
-import ItemCard from "@/components/ItemCard"
 import Container from "@/shared/Container"
-import { motion, useAnimation } from "framer-motion"
+import ImageGallery from "@/src/components/ImageGallery"
+import StatsSection from "@/src/components/StatsSection"
+import TestimonialCard from "@/src/components/TestiminalCard"
+import ScrollAnimation from "@/src/components/ui/ScrollAnimation"
+import useGetAllQuery from "@/src/hooks/api/useGetAllQuery"
+import { get, isArray } from "lodash"
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
-
-interface IProps {
-  delay?: number,
-  children?: React.ReactNode,
-}
-// Add this function after the imports and before any other components
-const ScrollAnimation = ({ children, delay = 0 }: IProps) => {
-  const controls = useAnimation()
-  const ref = useRef(null)
-  const [isVisible, setIsVisible] = useState(false)
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting)
-      },
-      { threshold: 0.1 },
-    )
-
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
-    return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isVisible) {
-      controls.start({ opacity: 1, y: 0 })
-    }
-  }, [isVisible, controls])
-
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 50 }}
-      animate={controls}
-      transition={{ duration: 0.8, delay, ease: "easeOut" }}
-    >
-      {children}
-    </motion.div>
-  )
-}
-const Counter = ({ value }: { value: number }) => {
-  const [count, setCount] = useState(0)
-  const ref = useRef<HTMLDivElement>(null)
-  const speed = 100 // Tezlik sozlash
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
-          let start = 0
-          const increment = value / speed
-          const timer = setInterval(() => {
-            start += increment
-            if (start >= value) {
-              setCount(value)
-              clearInterval(timer)
-            } else {
-              setCount(Math.ceil(start))
-            }
-          }, 20)
-        }
-      },
-      { threshold: 0.5 },
-    )
-
-    if (ref.current) observer.observe(ref.current)
-    return () => observer.disconnect()
-  }, [value])
-
-  return (
-    <div ref={ref} className="font-medium text-[40px] block text-white">
-      {count.toLocaleString()}
-    </div>
-  )
-}
+import { useEffect, useState } from "react"
 
 // Replace the entire StatsSection component with this
-const StatsSection = () => {
-  return (
-    <ScrollAnimation >
-      <div
-        className="relative mt-[90px] bg-cover bg-center h-[300px] flex items-center justify-center text-white"
-        style={{ backgroundImage: "url('https://preview.colorlib.com/theme/whitespace/images/bg_3.jpg.webp')" }}
-      >
-        <div className="absolute inset-0 bg-black/50"></div>
-        <div className="relative flex z-10  w-[1010px] mx-auto px-6">
-          <div className="w-[390px]">
-            <p className="text-sm uppercase tracking-widest">Some</p>
-            <h2 className="text-[40px] font-bold mb-6 ">Interesting Facts</h2>
-          </div>
-          <div className="flex justify-between  items-center max-w-4xl mx-auto text-center">
-            <div className="ml-[64px] w-[190px]">
-              <Counter value={2000} />
-              <p className="text-[16px] text-gray-300 block ">Done Works</p>
-            </div>
-            <div className="ml-[64px] w-[190px]">
-              <Counter value={300} />
-              <p className="text-[16px] text-gray-300 block ">Happy Customers</p>
-            </div>
-            <div className="ml-[64px] w-[190px]">
-              <Counter value={100} />
-              <p className="text-[16px] text-gray-300 block ">Coffee</p>
-            </div>
-            <div className="ml-[64px] w-[190px]">
-              <Counter value={1000} />
-              <p className="text-[16px] text-gray-300 block ">Work Hours</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </ScrollAnimation>
-  )
-}
 
-const ImageGallery = () => {
-  const controls = useAnimation()
-  const [isVisible, setIsVisible] = useState(false)
-  const galleryRef = useRef(null)
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsVisible(entry.isIntersecting)
-      },
-      { threshold: 0.2 },
-    )
 
-    if (galleryRef.current) {
-      observer.observe(galleryRef.current)
-    }
 
-    return () => {
-      if (galleryRef.current) {
-        observer.unobserve(galleryRef.current)
-      }
-    }
-  }, [])
-
-  useEffect(() => {
-    if (isVisible) {
-      controls.start({ opacity: 1, y: 0 })
-    }
-  }, [isVisible, controls])
-
-  const images = [
-    "https://preview.colorlib.com/theme/whitespace/images/project-4.jpg.webp",
-    "https://preview.colorlib.com/theme/whitespace/images/project-4.jpg.webp",
-    "https://preview.colorlib.com/theme/whitespace/images/project-4.jpg.webp",
-    "https://preview.colorlib.com/theme/whitespace/images/project-4.jpg.webp",
-  ]
-
-  return (
-    <motion.div
-      ref={galleryRef}
-      id="gallery"
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full px-6 mx-auto mt-20 "
-      initial={{ opacity: 0, y: 50 }}
-      animate={controls}
-      transition={{ duration: 0.8, ease: "easeOut" }}
-    >
-      {images.map((src, index) => (
-        <div
-          key={index}
-          className={`relative h-[400px] overflow-hidden rounded-lg shadow-lg group ${index === 0 || index === 3 ? "lg:col-span-2" : ""
-            }`}
-        >
-          {/* Asl rasm */}
-          <Image
-            width={600}
-            height={400}
-            src={src || "/placeholder.svg"}
-            alt={`Gallery Image ${index + 1}`}
-            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
-          />
-
-          {/* Hover qilinganda chiqadigan overlay */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileHover={{ opacity: 1 }}
-            transition={{ duration: 0.1, ease: "easeInOut" }}
-            className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center text-white px-4"
-          >
-            <h2 className="text-2xl font-bold">Branding & Illustration Design</h2>
-            <p className="text-yellow-400 uppercase tracking-[2px] text-[12px] font-semibold mt-2">WEB DESIGN</p>
-          </motion.div>
-        </div>
-      ))}
-    </motion.div>
-  )
-}
-
-const testimonials = [
-  {
-    name: "Garreth Smith",
-    role: "Marketing Manager",
-    image: "https://randomuser.me/api/portraits/men/32.jpg",
-    quote:
-      "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.",
-  },
-  {
-    name: "Garreth Smith",
-    role: "Interface Designer",
-    image: "https://randomuser.me/api/portraits/men/43.jpg",
-    quote:
-      "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.",
-  },
-  {
-    name: "Garreth Smith",
-    role: "UI Designer",
-    image: "https://randomuser.me/api/portraits/men/55.jpg",
-    quote:
-      "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.",
-  },
-  {
-    name: "Garreth Smith",
-    role: "Web Developer",
-    image: "https://randomuser.me/api/portraits/men/67.jpg",
-    quote:
-      "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts.",
-  },
-]
 
 // Replace the entire TestimonialCard component with this
-const TestimonialCard = () => {
-  return (
-    <ScrollAnimation>
-      <div className="overflow-hidden mt-[90px] max-h-max bg-[#FBD40A]">
-        <ItemCard
-          slider
-          sliderConfig={{
-            slidesToShow: 4,
-          }}
-          className="m-auto "
-          items={testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-[#FDDC56] space-y-6 mb-6  mx-10 w-[380px]  m-auto p-8 rounded-lg   text-center "
-            >
-              <div className="relative w-20  h-20 mx-auto">
-                <Image
-                  width={100}
-                  height={100}
-                  src={testimonial.image || "/placeholder.svg"}
-                  alt={testimonial.name}
-                  className="w-20 h-20 rounded-full border-4 border-white shadow-md"
-                />
-                <div className="absolute bottom-0 right-0 w-8 h-8 bg-white rounded-full flex items-center justify-center">
-                  <span className="text-yellow-500 text-xl font-bold">&quot;</span>
-                </div>
-              </div>
-              <p className="mt-4 text-gray-800 text-sm">{testimonial.quote}</p>
-              <h3 className="mt-4 font-bold text-lg">{testimonial.name}</h3>
-              <p className="text-gray-600 text-sm">{testimonial.role}</p>
-            </div>
-          ))}
-        ></ItemCard>
 
-        <ScrollAnimation delay={0.2}>
-          <h1 className="text-[50px] font-bold mb-[1.5rem] leading-[1.5] text-center block mt-10">
-            My satisfied customer says{" "}
-          </h1>
-          <p className="text-center  text-[15px] leading-[1.8] font-light text-[#666666] block mb-[150px] mt-10">
-            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-            blind texts. Separated they live in
-          </p>
-        </ScrollAnimation>
-      </div>
-    </ScrollAnimation>
-  )
-}
 const PricingCard = ({
   tier,
   price,
@@ -510,7 +247,12 @@ export default function Main() {
       icon: "💡",
     },
   ]
+  const { data } = useGetAllQuery({
+    key: "projects",
+    url: "/projects/",
+  })
 
+  const items = isArray(get(data, "data.results")) ? get(data, "data.results") : []
   return (
     <div>
       <div>
@@ -518,7 +260,7 @@ export default function Main() {
           {isClient && (
             <iframe
               src="https://www.youtube.com/embed/iia8HIsvqmw?modestbranding=1&autoplay=1&controls=0&showinfo=0&rel=0&enablejsapi=1&version=3&playerapiid=iframe_YTP_1742636383655&origin=https%3A%2F%2Fpreview.colorlib.com&allowfullscreen=true&wmode=transparent&iv_load_policy=3&playsinline=1&mute=1&html5=1&widgetid=1&loop=1"
-              className="absolute w-[300%] h-[82%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
+              className="absolute w-auto sm:w-[200%] md:w-[150%] lg:w-[120%] h-[82%] top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
               title="Background Video"
@@ -546,37 +288,36 @@ export default function Main() {
 
       <Container>
         <ScrollAnimation>
-          <div className="grid grid-cols-10 w-[1010px] ml-auto mr-[270px]    h-max">
-            <div className="flex col-span-6 flex-col   text-right items-end">
-              <div className="mb-[48px] mt-[96px]">
-                <p className="font-semibold text-[13px] block mb-0 uppercase tracking-[2px] text-[#fcd307]">
-                  Providing
-                </p>
-                <h2 className="mt-[16px] mb-12 leading-[6px] text-[34px] font-bold">What We Can Do for You</h2>
+          <div className="grid grid-cols-1 md:grid-cols-12 w-full max-w-[1200px] mx-auto px-4 sm:px-6 lg:px-8 h-max">
+            <div className="flex col-span-1 md:col-span-12 lg:col-span-6 flex-col text-center md:text-right md:items-end">
+              <div className="mb-8 md:mb-[48px] mt-10 md:mt-[96px]">
+                <p className="font-semibold text-[13px] block mb-0 uppercase tracking-[2px] text-[#fcd307]">Providing</p>
+                <h2 className="mt-4 md:mt-[16px] mb-6 md:mb-12 text-2xl md:text-[34px] font-bold leading-tight md:leading-[1.2]">
+                  What We Can Do for You
+                </h2>
               </div>
 
-              {services?.map((_, index: number) => (
+              {services?.map((service, index) => (
                 <ScrollAnimation key={index} delay={index * 0.1}>
-                  <div className="flex justify-end  items-center w-full mb-[56px]">
-                    <div className="w-[399px] space-y-[6px]">
-                      <h1 className="font-medium uppercase tracking-[1px] text-[18px]">Market Research</h1>
-                      <p className="bg-white  text-[15px] leading-[1.8] font-light text-[#666666] ">
-                        Even the all-powerful Pointing has no control about the blind texts it is an almost
-                        unorthographic.
+                  <div className="flex flex-col md:flex-row md:justify-end items-center w-full mb-8 md:mb-[56px]">
+                    <div className="w-full md:w-[399px] space-y-2 md:space-y-[6px] order-2 md:order-1">
+                      <h1 className="font-medium uppercase tracking-[1px] text-base md:text-[18px]">{service.title}</h1>
+                      <p className="bg-white text-sm md:text-[15px] leading-[1.8] font-light text-[#666666]">
+                        {service.description}
                       </p>
                     </div>
-                    <div className="w-[80px] ml-6 h-[80px] rounded-full bg-black"></div>
+                    <div className="w-[60px] md:w-[80px] h-[60px] md:h-[80px] md:ml-6 mb-4 md:mb-0 rounded-full bg-black order-1 md:order-2"></div>
                   </div>
                 </ScrollAnimation>
               ))}
             </div>
-            <div className="flex ml-12 col-span-4  justify-end items-start">
+            <div className="flex col-span-1 md:col-span-12 lg:col-span-6 justify-center lg:justify-end items-start mt-8 lg:mt-0 lg:ml-12">
               <Image
                 width={600}
                 height={1000}
-                className="w-full h-full object-center object-cover"
+                className="w-full max-w-md lg:max-w-none h-auto lg:h-full object-center object-cover rounded-lg shadow-md"
                 src="https://preview.colorlib.com/theme/whitespace/images/about.jpg"
-                alt="img"
+                alt="Services image"
               />
             </div>
           </div>
@@ -584,16 +325,18 @@ export default function Main() {
 
         <ScrollAnimation>
           <div>
-            <div className="flex justify-center gap-8 py-12 mt-[40px]">
+            <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-y-10 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 py-8 sm:py-12 mt-6 sm:mt-[40px] px-4">
               {services1.map((service, index) => (
                 <ScrollAnimation key={index} delay={index * 0.1}>
-                  <div className="text-center w-64">
-                    <div className="relative inline-block p-4 rounded-full bg-gray-100">
-                      <span className="text-4xl relative z-10"></span>
-                      <div className="absolute -top-2 -left-2 w-8 h-8 bg-yellow-400 rounded-full"></div>
+                  <div className="text-center w-full sm:w-[45%] md:w-64 mx-auto sm:mx-0">
+                    <div className="relative inline-block p-3 sm:p-4 rounded-full bg-gray-100">
+                      <span className="text-3xl sm:text-4xl relative z-10"></span>
+                      <div className="absolute -top-2 -left-2 w-6 sm:w-8 h-6 sm:h-8 bg-yellow-400 rounded-full"></div>
                     </div>
-                    <h3 className="mt-4 font-medium  uppercase tracking-[1px] tezt-[18px] text-lg">{service.title}</h3>
-                    <p className="  mt-2 bg-white  text-[15px]  font-light text-[#666666]">{service.description}</p>
+                    <h3 className="mt-3 sm:mt-4 font-medium uppercase tracking-[1px] text-base sm:text-lg">{service.title}</h3>
+                    <p className="mt-2 bg-white text-sm sm:text-[15px] font-light text-[#666666] max-w-xs mx-auto sm:mx-0">
+                      {service.description}
+                    </p>
                   </div>
                 </ScrollAnimation>
               ))}
@@ -618,61 +361,58 @@ export default function Main() {
       <ImageGallery />
       <TestimonialCard />
 
+      <div className="flex justify-center items-center flex-col  mb-[80px]">
+        <p className="font-semibold text-[13px] block mt-[90px] uppercase tracking-[2px] text-[#fcd307]">Our latest update</p>
+        <h1 className="text-[50px] font-bold mb-[1.5rem] leading-[1.5] ">Case Study</h1>
+        <p className="bg-white  text-[15px] leading-[1.8] font-light text-[#666666] w-1/2 text-center">
+          Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the blind texts. Separated they live in
+        </p>
+      </div>
       <ScrollAnimation>
-        <div className="flex mb-[80px] justify-center items-center flex-col">
-          <p className="font-semibold text-[13px] block mt-[90px] uppercase tracking-[2px] text-[#fcd307]">
-            Our latest update
-          </p>
-          <h1 className="text-[50px] font-bold mb-[1.5rem] leading-[1.5] ">Case Study</h1>
-          <p className="bg-white  text-[15px] leading-[1.8] font-light text-[#666666] w-[33%] text-center">
-            Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, there live the
-            blind texts. Separated they live in
-          </p>
-        </div>
-      </ScrollAnimation>
+        <div className="col-span-12 md:col-span-12 lg:col-span-8">
+          <ScrollAnimation>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 w-full sm:w-[95%] md:w-[90%] lg:w-[80%] m-auto px-4 sm:px-0">
+              {
+                items?.map((item: any, index: number) => (
+                  <ScrollAnimation delay={Number(`0.${index}`)} key={index}>
+                    <div className="w-full flex justify-center items-start flex-col space-y-3 sm:space-y-6">
+                      <div
+                        className="w-full aspect-[4/3] object-cover object-center rounded-md overflow-hidden"
+                        style={{
+                          backgroundImage: `url('${item?.images[0].image}')`,
+                          backgroundSize: "cover",
+                          backgroundPosition: "center",
+                        }}
+                      ></div>
+                      <h1 className="text-sm sm:text-base text-gray-600">Oct. 12, 2018 Admin </h1>
+                      <p className="text-base sm:text-lg md:text-[20px] mb-2 sm:mb-[16px] leading-[1.4] font-normal">
+                        {item?.description}
+                      </p>
+                    </div>
+                  </ScrollAnimation>
 
-      <ScrollAnimation>
-        <div className="grid  grid-cols-3 gap-6 w-[80%] m-auto">
-          <ScrollAnimation delay={0.1}>
-            <div className="w-[350px]   flex justify-center items-start flex-col space-y-6 ">
-              <div
-                className="w-[350px] h-[275px] object-cover object-center "
-                style={{ backgroundImage: "url('https://preview.colorlib.com/theme/whitespace/images/bg_3.jpg.webp')" }}
-              ></div>
-              <h1>Oct. 12, 2018 Admin </h1>
-              <p className="text-[20px] mb-[16px] leading-[1.4] font-normal ">
-                Even the all-powerful Pointing has no control about the blind texts
-              </p>
+                ))
+              }
             </div>
-          </ScrollAnimation>
-
-          <ScrollAnimation delay={0.2}>
-            <div className="w-[350px]   flex justify-center items-start flex-col space-y-6">
-              <div
-                className="w-[350px] h-[275px]"
-                style={{
-                  backgroundImage: "url(https://preview.colorlib.com/theme/whitespace/images/image_1.jpg.webp)",
-                }}
-              ></div>
-              <h1>Oct. 12, 2018 Admin </h1>
-              <p className="text-[20px] mb-[16px] leading-[1.4] font-normal ">
-                Even the all-powerful Pointing has no control about the blind texts
-              </p>
-            </div>
-          </ScrollAnimation>
-
-          <ScrollAnimation delay={0.3}>
-            <div className="w-[350px]   flex justify-center items-start flex-col space-y-6">
-              <div
-                className="w-[350px] h-[275px]"
-                style={{
-                  backgroundImage: "url(https://preview.colorlib.com/theme/whitespace/images/image_1.jpg.webp)",
-                }}
-              ></div>
-              <h1>Oct. 12, 2018 Admin </h1>
-              <p className="text-[20px] mb-[16px] leading-[1.4] font-normal ">
-                Even the all-powerful Pointing has no control about the blind texts
-              </p>
+            <div className="max-w-max m-auto flex flex-wrap my-8 sm:my-12 md:my-[78px] justify-center items-center gap-1 sm:gap-2">
+              <div className="w-[30px] sm:w-[40px] border border-gray-300 h-[30px] sm:h-[40px] rounded-full flex justify-center items-center text-sm sm:text-base">
+                {"<"}
+              </div>
+              {[1, 2, 3, 4, 5].map((item) => (
+                <div
+                  className={
+                    item === 1
+                      ? "w-[30px] sm:w-[40px] border h-[30px] sm:h-[40px] rounded-full flex justify-center items-center bg-black text-white text-sm sm:text-base"
+                      : "w-[30px] sm:w-[40px] border border-gray-300 h-[30px] sm:h-[40px] rounded-full flex justify-center items-center text-sm sm:text-base"
+                  }
+                  key={item}
+                >
+                  {item}
+                </div>
+              ))}
+              <div className="w-[30px] sm:w-[40px] border border-gray-300 h-[30px] sm:h-[40px] rounded-full flex justify-center items-center text-sm sm:text-base">
+                {">"}
+              </div>
             </div>
           </ScrollAnimation>
         </div>

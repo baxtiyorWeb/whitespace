@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 import MainImage from "@/components/MainImage"
 import Link from "next/link"
 
+import usePostQuery from "@/src/hooks/api/usePostQuery"
 import { motion } from "framer-motion"
+import { LoaderCircle } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 
 
@@ -52,7 +55,10 @@ const ContactInfoItem = ({ title, content, delay = 0 }: IProps) => {
 
 const ContactSection = () => {
 
-  const [formData, setFormData] = useState({
+  const { mutate, isPending } = usePostQuery({})
+
+  const [success, setSuccess] = useState<string | any>('')
+  const [formData, setFormData] = useState<string | any>({
     name: "",
     email: "",
     subject: "",
@@ -61,17 +67,28 @@ const ContactSection = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target
-    setFormData((prev) => ({
+    setFormData((prev: any) => ({
       ...prev,
       [name]: value,
     }))
   }
 
+
+
+
   const handleSubmit = (e: React.MouseEvent<HTMLFormElement>) => {
     e.preventDefault()
-    console.log("Form submitted:", formData)
-    // Here you would typically send the data to your backend
-    alert("Message sent! (This is a demo)")
+    console.log(formData);
+
+    mutate({
+      url: "/admin/contact-submissions/",
+      attributes: formData
+    }, {
+      onSuccess: (res: any) => {
+        setSuccess("yuborildi")
+        console.log(res);
+      }
+    })
   }
 
   return (
@@ -135,10 +152,12 @@ const ContactSection = () => {
             <div>
               <button
                 type="submit"
-                className="bg-[#fce675] text-gray-800 px-8 py-3 rounded-full hover:bg-yellow-400 transition-colors"
+                className="bg-[#fce675] text-gray-800 px-8 py-3 rounded-full hover:bg-yellow-400 transition-colors flex justify-center items-center"
               >
-                Send Message
+                {isPending ? <LoaderCircle className="animate-spin" /> : "Send Message"}
               </button>
+
+              {<span className="block mt-10 text-teal-500 font-semibold text-lg">{success}</span>}
             </div>
           </form>
         </div>

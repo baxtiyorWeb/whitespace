@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { api } from '@/config/auth/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 type PostRequestProps = {
 	url: string;
-	attributes?: Record<string, null> | null;
+	attributes?: Record<string, any> | null;
 	config?: AxiosRequestConfig;
 };
 
