@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { get, isArray } from 'lodash'
+import Link from 'next/link'
 import useGetAllQuery from '../hooks/api/useGetAllQuery'
 import ScrollAnimation from './ui/ScrollAnimation'
 
@@ -28,9 +29,9 @@ const BlogCard = () => {
                       }}
                     ></div>
                     <h1 className="text-sm sm:text-base text-gray-600">Oct. 12, 2018 Admin </h1>
-                    <p className="text-base sm:text-lg md:text-[20px] mb-2 sm:mb-[16px] leading-[1.4] font-normal">
+                    <Link href={`/blog/${item?.id}`} className="text-base sm:text-lg md:text-[20px] mb-2 sm:mb-[16px] leading-[1.4] font-normal">
                       {item?.description}
-                    </p>
+                    </Link>
                   </div>
                 </ScrollAnimation>
 
@@ -47,9 +48,9 @@ const BlogCard = () => {
                   }}
                 ></div>
                 <h1 className="text-sm sm:text-base text-gray-600">Oct. 12, 2018 Admin </h1>
-                <p className="text-base sm:text-lg md:text-[20px] mb-2 sm:mb-[16px] leading-[1.4] font-normal">
+                <Link href={`/blog/${1}`} className="text-base sm:text-lg md:text-[20px] mb-2 sm:mb-[16px] leading-[1.4] font-normal">
                   Even the all-powerful Pointing has no control about the blind textssss
-                </p>
+                </Link>
               </div>
             </ScrollAnimation>
           </div>
