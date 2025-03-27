@@ -1,11 +1,22 @@
 "use client"
 import usePostQuery from "@/src/hooks/api/usePostQuery"
-import { useState } from "react"
+import { usePathname, useRouter } from "next/navigation"
+import { useEffect, useState } from "react"
 
 const Login = () => {
   const { mutate } = usePostQuery({})
   const [username, setuserName] = useState("admin")
   const [password, setpassword] = useState("UzDev2024!")
+  const pathname = usePathname(); // Hozirgi sahifa manzilini olish
+  const router = useRouter(); // Next.js router
+
+  useEffect(() => {
+    const token = localStorage.getItem("access_token");
+
+    if (token && pathname !== "/") {
+      router.push("/"); // Sahifani qayta yuklamasdan Next.js bilan redirect qilish
+    }
+  }, [pathname, router]); // Dependency array qo‘shildi
 
   const login = () => {
     mutate({
@@ -23,6 +34,7 @@ const Login = () => {
     }, {
       onSuccess: (e) => {
         console.log(e.data);
+        window.location.href = "/"
         localStorage.setItem("access_token", e.data?.access)
         localStorage.setItem("refresh_token", e.data?.refresh)
       }
