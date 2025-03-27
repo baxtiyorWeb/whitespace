@@ -62,7 +62,7 @@ const Header: React.FC = () => {
           {navItems.map((item: any) => (
             <li key={item.label}>
               <Link
-                href={item.label}
+                href={item.url}
                 className="block text-[16px] font-medium text-black py-2"
                 onClick={() => setMenuOpen(false)}
               >
