@@ -56,7 +56,6 @@ const Header: React.FC = () => {
         ))}
       </ul>
 
-      {/* Mobil menyu */}
       {menuOpen && (
         <ul className="lg:hidden absolute top-[103px] left-0 w-full bg-white shadow-md flex flex-col items-center space-y-4 py-4">
           {navItems.map((item: any) => (
