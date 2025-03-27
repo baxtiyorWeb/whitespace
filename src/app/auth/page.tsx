@@ -7,16 +7,16 @@ const Login = () => {
   const { mutate } = usePostQuery({})
   const [username, setuserName] = useState("admin")
   const [password, setpassword] = useState("UzDev2024!")
-  const pathname = usePathname(); // Hozirgi sahifa manzilini olish
-  const router = useRouter(); // Next.js router
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
     if (token && pathname !== "/") {
-      router.push("/"); // Sahifani qayta yuklamasdan Next.js bilan redirect qilish
+      router.push("/")
     }
-  }, [pathname, router]); // Dependency array qo‘shildi
+  }, [pathname, router]);
 
   const login = () => {
     mutate({

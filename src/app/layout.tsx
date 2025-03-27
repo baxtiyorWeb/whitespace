@@ -8,16 +8,15 @@ import "./globals.css";
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  const pathname = usePathname(); // Hozirgi sahifa manzilini olish
-  const router = useRouter(); // Next.js router
-
+  const pathname = usePathname();
+  const router = useRouter();
   useEffect(() => {
     const token = localStorage.getItem("access_token");
 
     if (!token && pathname !== "/auth") {
-      router.push("/auth"); // Sahifani qayta yuklamasdan Next.js bilan redirect qilish
+      router.push("/auth");
     }
-  }, [pathname, router]); // Dependency array qo‘shildi
+  }, [pathname, router]);
 
   return (
     <html lang="en">
